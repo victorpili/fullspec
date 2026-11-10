@@ -161,6 +161,42 @@
   .site-footer nav { display: flex; gap: 20px; flex-wrap: wrap; }
   .site-footer a { color: var(--muted); }
 
+  /* Audit request dialog */
+  .audit {
+    width: min(480px, calc(100% - 32px)); max-height: calc(100% - 32px);
+    margin: auto; padding: 0; border: 0; border-radius: 16px;
+    background: var(--paper); color: var(--ink);
+    box-shadow: 0 24px 64px rgba(27, 31, 35, 0.28);
+  }
+  .audit::backdrop { background: rgba(27, 31, 35, 0.55); }
+  .audit-inner { position: relative; padding: clamp(24px, 5vw, 36px); }
+  .audit h2 { font-size: clamp(1.5rem, 1.2rem + 1vw, 1.875rem); padding-right: 36px; }
+  .audit-intro { margin-top: 10px; color: var(--muted); font-size: 1rem; }
+  .audit-close {
+    position: absolute; top: 14px; right: 14px; width: 40px; height: 40px;
+    display: inline-flex; align-items: center; justify-content: center;
+    background: transparent; border: 0; border-radius: 8px; cursor: pointer;
+    color: var(--muted); font-size: 1.75rem; line-height: 1;
+  }
+  .audit-close:hover { background: var(--mist); color: var(--ink); }
+  .audit form { margin-top: 22px; display: grid; gap: 16px; }
+  .field label { display: block; font-weight: 600; font-size: 0.9375rem; margin-bottom: 6px; }
+  .field input {
+    width: 100%; font: 400 1rem var(--text); color: var(--ink);
+    padding: 11px 14px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--paper);
+  }
+  .field input:focus { outline: none; border-color: var(--green); box-shadow: 0 0 0 3px rgba(25, 132, 82, 0.2); }
+  .field .hint { margin-top: 5px; font-size: 0.875rem; color: var(--muted); }
+  .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+  .audit .button { width: 100%; margin-top: 4px; padding: 14px 20px; }
+  .audit .button[disabled] { opacity: 0.7; cursor: progress; }
+  .audit-status { font-size: 0.9375rem; }
+  .audit-status.is-error { color: #B42318; }
+  .audit-done { margin-top: 18px; }
+  .audit-done p + p { margin-top: 12px; }
+  .audit-done .button { margin-top: 22px; }
+  .audit-fine { font-size: 0.875rem; color: var(--muted); }
+
   @media (max-width: 900px) {
     .hero .wrap, .split { grid-template-columns: minmax(0, 1fr); }
     .tag-frame { justify-self: start; }
@@ -191,7 +227,7 @@
       <a href="#how">How it works</a>
       <a href="#pricing">Pricing</a>
       <a href="#faq">FAQ</a>
-      <a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20">Get a free audit</a>
+      <a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20" data-audit>Get a free audit</a>
     </nav>
   </div>
 </header>
@@ -204,7 +240,7 @@
         <p class="lede">Shoppers now ask ChatGPT, Gemini and Perplexity which grinder or espresso machine to buy. An assistant can only recommend what your product page actually says.</p>
         <p class="lede">Fullspec finds the specs your pages leave out and fills them in from the manufacturer's data, ready to import into Shopify.</p>
         <div class="hero-actions">
-          <a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20">Get a free audit</a>
+          <a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20" data-audit>Get a free audit</a>
           <a href="#how">See how it works</a>
         </div>
         <p class="hero-note">Free, no obligation, and no store access needed.</p>
@@ -305,7 +341,7 @@
         </div>
       </div>
       <p class="prices-note">All prices are in US dollars (USD). Paid upfront, after you approve the proposal, by card through Stripe or by PayPal invoice.</p>
-      <div class="section-cta"><a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20">Get a free audit</a></div>
+      <div class="section-cta"><a class="button" href="mailto:team.fullspec@gmail.com?subject=Free%20audit%20request&amp;body=Store%20address%3A%20" data-audit>Get a free audit</a></div>
     </div>
   </section>
 
@@ -390,6 +426,41 @@
   </div>
 </footer>
 
+<dialog class="audit" id="audit" aria-labelledby="audit-title">
+  <div class="audit-inner">
+    <button class="audit-close" type="button" data-close aria-label="Close">&times;</button>
+    <h2 id="audit-title">Get a free audit</h2>
+    <p class="audit-intro">Tell us where to look. Within 2 business days you get a short report on up to 10 of your equipment pages.</p>
+    <form id="audit-form" action="https://formspree.io/f/moedajrk" method="POST" novalidate>
+      <input type="hidden" name="_subject" value="Free audit request">
+      <div class="field">
+        <label for="audit-store">Store name</label>
+        <input id="audit-store" name="store_name" type="text" autocomplete="organization" required maxlength="120">
+      </div>
+      <div class="field">
+        <label for="audit-site">Store website</label>
+        <input id="audit-site" name="website" type="text" inputmode="url" autocomplete="url" placeholder="yourstore.com" required maxlength="200">
+      </div>
+      <div class="field">
+        <label for="audit-email">Contact email</label>
+        <input id="audit-email" name="email" type="email" autocomplete="email" required maxlength="200">
+      </div>
+      <div class="hp" aria-hidden="true">
+        <label for="audit-gotcha">Leave this empty</label>
+        <input id="audit-gotcha" name="_gotcha" type="text" tabindex="-1" autocomplete="off">
+      </div>
+      <button class="button" type="submit">Request my free audit</button>
+      <p class="audit-status" id="audit-status" role="status" aria-live="polite"></p>
+      <p class="audit-fine">No store access needed. We use these details only to send your audit.</p>
+    </form>
+    <div class="audit-done" id="audit-done" hidden>
+      <p><strong>Thanks, we've got it.</strong></p>
+      <p>Your audit will reach your inbox within 2 business days. If you don't see it, check your spam folder or write to <a href="mailto:team.fullspec@gmail.com">team.fullspec@gmail.com</a>.</p>
+      <button class="button" type="button" data-close>Close</button>
+    </div>
+  </div>
+</dialog>
+
 <script>
 (function () {
   var sheet = document.getElementById('sheet');
@@ -436,6 +507,71 @@
   if (reduce) { showAfter(false); return; }
   showBefore();
   timers.push(setTimeout(function () { showAfter(true); }, 1400));
+})();
+
+(function () {
+  var dialog = document.getElementById('audit');
+  if (!dialog || typeof dialog.showModal !== 'function') return; // old browsers keep the mailto links
+  var form = document.getElementById('audit-form');
+  var done = document.getElementById('audit-done');
+  var status = document.getElementById('audit-status');
+  var submit = form.querySelector('button[type="submit"]');
+  var site = document.getElementById('audit-site');
+
+  function open(e) {
+    e.preventDefault();
+    if (!done.hidden) { done.hidden = true; form.hidden = false; form.reset(); }
+    status.textContent = ''; status.className = 'audit-status';
+    dialog.showModal();
+    document.getElementById('audit-store').focus();
+  }
+  Array.prototype.forEach.call(document.querySelectorAll('[data-audit]'), function (a) {
+    a.addEventListener('click', open);
+  });
+  Array.prototype.forEach.call(dialog.querySelectorAll('[data-close]'), function (b) {
+    b.addEventListener('click', function () { dialog.close(); });
+  });
+  dialog.addEventListener('click', function (e) { if (e.target === dialog) dialog.close(); });
+
+  function fail(msg, field) {
+    status.textContent = msg;
+    status.className = 'audit-status is-error';
+    if (field) field.focus();
+  }
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fields = form.querySelectorAll('input[required]');
+    for (var i = 0; i < fields.length; i++) {
+      fields[i].value = fields[i].value.trim();
+      if (!fields[i].checkValidity()) {
+        var name = form.querySelector('label[for="' + fields[i].id + '"]').textContent.toLowerCase();
+        return fail(fields[i].value ? 'Please check the ' + name + '.' : 'Please fill in the ' + name + '.', fields[i]);
+      }
+    }
+    if (!/^(https?:\/\/)?[^\s\/.]+\.[^\s]+$/i.test(site.value)) {
+      return fail('Please enter the store website, like yourstore.com.', site);
+    }
+
+    submit.disabled = true;
+    submit.textContent = 'Sending…';
+    status.textContent = ''; status.className = 'audit-status';
+
+    fetch(form.action, { method: 'POST', body: new FormData(form), headers: { 'Accept': 'application/json' } })
+      .then(function (res) {
+        if (!res.ok) throw new Error('bad status');
+        form.hidden = true;
+        done.hidden = false;
+        done.querySelector('.button').focus();
+      })
+      .catch(function () {
+        fail('Something went wrong. Please try again, or email team.fullspec@gmail.com.');
+      })
+      .then(function () {
+        submit.disabled = false;
+        submit.textContent = 'Request my free audit';
+      });
+  });
 })();
 </script>
 </body>
